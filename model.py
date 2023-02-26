@@ -63,9 +63,6 @@ class ClusterLearner(nn.Module):
 
         self.gnn_type = gnn_type
 
-        self.lin1 = nn.Linear(emb_dim, emb_dim * 2)
-        self.lin2 = nn.Linear(emb_dim * 2, emb_dim)
-
     def forward(self, x, edge_index, edge_attr, pos, batch):
         s = self.gnn_pool(x, edge_index, edge_attr, pos)
         z = self.gnn_emb(x, edge_index, edge_attr, pos)

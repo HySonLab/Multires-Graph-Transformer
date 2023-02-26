@@ -1,5 +1,5 @@
-device=cuda:0
-pe_name=wave
+device=cuda:1
+pe_name=random_walk
 batch_size=128
 num_layer=2
 num_epoch=200
@@ -7,7 +7,7 @@ num_head=4
 norm=batch
 emb_dim=84
 num_task=10
-dropoutt=0.25
+dropout=0.25
 residual=1
 num_cluster=10
 attn_dropout=0.5
@@ -24,5 +24,5 @@ do
                                    --norm=$norm --emb_dim=$emb_dim --num_task=$num_task --dropout=$dropout \
                                    --residual=$residual --num_cluster=$num_cluster --attn_dropout=$attn_dropout \
                                    --local_gnn_type=$local_gnn_type --global_model_type=$global_model_type \
-                                   --pos_dim=$pos_dim --version=$custom --gnn_type=$gnn_type 
+                                   --pos_dim=$pos_dim --version=$version --gnn_type=$gnn_type 
 done

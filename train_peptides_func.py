@@ -89,10 +89,10 @@ for batch in train_loader:
     break
 
 if args.version == "custom":
-    model = CustomMGT(args, args.pe_name).to(args.device)
+    model = CustomMGT(args).to(args.device)
 else:
     model = MGT(args.num_layer, args.emb_dim, args.pos_dim, args.num_task, args.num_head, args.dropout, 
-                args.attn_dropout, args.norm, args.num_cluster, args.gnn_type, args.pe_name, args.device)
+                args.attn_dropout, args.norm, args.num_cluster, args.gnn_type, args.pe_name, args.device).to(args.device)
 
 print("Number of parameters: ", model.num_parameters)
 

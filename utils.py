@@ -60,4 +60,6 @@ def eval_with_cluster(model, device, loader, evaluator, task_type = -1):
             y_pred.append(pred.detach().cpu())
     y_true = torch.cat(y_true, dim = 0)
     y_pred = torch.cat(y_pred, dim = 0)
+    if task_type == "classification":
+        return evaluator(y_true, y_pred)
     return evaluator(y_pred, y_true)
