@@ -19,7 +19,7 @@ gnn_type=gine # only used for MGT (not CustomMGT)
 
 for seed in 1
 do 
-    python3 ../train_peptides_func.py --seed=$seed --device=$device --pe_name=$pe_name --batch_size=$batch_size \
+    python3 train_peptides_func.py --seed=$seed --device=$device --pe_name=$pe_name --batch_size=$batch_size \
                                    --num_layer=$num_layer --num_epoch=$num_epoch --num_head=$num_head \
                                    --norm=$norm --emb_dim=$emb_dim --num_task=$num_task --dropout=$dropout \
                                    --residual=$residual --num_cluster=$num_cluster --attn_dropout=$attn_dropout \
