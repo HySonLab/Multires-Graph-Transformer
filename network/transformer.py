@@ -13,7 +13,7 @@ class TransformerLayer(nn.Module):
         self.msa = nn.MultiheadAttention(
              emb_dim, num_head, dropout = drop_ratio, batch_first = True)
         
-        if norm == "batch_norm":
+        if norm == "batch":
             self.norm1 = nn.BatchNorm1d(emb_dim)
             self.norm2 = nn.BatchNorm1d(emb_dim)
         else:
@@ -42,7 +42,7 @@ class TransformerLayer(nn.Module):
             h_dense = h
             h_attn = self.msa(h_dense, h_dense, h_dense)[0]
             Bz, _, _ = h.size()
-            if self.norm == "batch_norm":
+            if self.norm == "batch":
                 h_attn = h_attn.contiguous().view(-1, self.emb_dim)
                 h = h.view(-1, self.emb_dim)
             h = self.norm1(h + h_attn)

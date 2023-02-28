@@ -80,33 +80,3 @@ class Learnable_Equiv_WaveletPE(object):
             p.append(torch.from_numpy(w.toarray()))
         p = torch.stack(p, dim = 0)
         return dense_to_sparse(p)
-    
-class EigenDecompose(object):
-
-    '''
-        This class is used to compute the eigenvectors and eigenvalues of a Laplacian
-        We use these tensors to compute the wavelet tensors which are fed to a learnable equivariant encoding layer.
-    
-    '''
-    def __init__(self, is_undirected = True):
-        self.is_undirected = is_undirected
-
-    def __call__(self, data):
-        from scipy.sparse.linalg import eigs, eigsh
-        eig_fn = eigs if not self.is_undirected else eigsh
-        num_nodes = data.num_nodes
-        edge_index, edge_weight = utils.get_laplacian(
-            data.edge_index,
-            data.edge_weight,
-            normalization='sym',
-            num_nodes=num_nodes,
-        )
-        L = utils.to_scipy_sparse_matrix(edge_index, edge_weight, num_nodes)
-        eig_vals, eig_vecs = eig_fn(
-            L,
-            which='SR' if not self.is_undirected else 'SA',
-            return_eigenvectors=True,
-        )
-        data.EigVals = torch.tensor(eig_vals)
-        data.EigVecs = torch.tensor(eig_vecs)
-        return data

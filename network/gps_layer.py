@@ -8,7 +8,7 @@ from torch_geometric.data import Batch
 from torch_geometric.nn import Linear as Linear_pyg
 from torch_geometric.utils import to_dense_batch
 
-from conv import GatedGCNLayer
+from network.conv import GatedGCNLayer
 
 
 class GPSLayer(nn.Module):

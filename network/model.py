@@ -5,10 +5,10 @@ import torch_geometric
 import torch_geometric.nn as pyg_nn 
 import torch_geometric.utils as pyg_utils
 from ogb.graphproppred.mol_encoder import AtomEncoder, BondEncoder
-from transformer import *
-from conv import *
-from gps_layer import GPSLayer
-from learnable_equiv_wave import EquivWavePE
+from network.transformer import *
+from network.conv import *
+from network.gps_layer import GPSLayer
+from network.learnable_equiv_wave import EquivWavePE
 
 class GraphPooling(nn.Module):
     def __init__(self, emb_dim, out_dim, dropout, norm = "layer", lin = True, gnn_type = "gine"):
@@ -22,8 +22,8 @@ class GraphPooling(nn.Module):
             self.conv1 = pyg_nn.GraphConv(emb_dim, emb_dim)
             self.conv2 = pyg_nn.GraphConv(emb_dim, emb_dim)
         elif gnn_type == "CustomGatedGCN":
-            self.conv1 = GatedGCNLayer(emb_dim, emb_dim, dropout, True, True)
-            self.conv2 = GatedGCNLayer(emb_dim, out_dim, dropout, False, True)
+            self.conv1 = GatedGCNLayer(emb_dim, emb_dim, 0, False, True)
+            self.conv2 = GatedGCNLayer(emb_dim, out_dim, 0, False, True)
 
         self.gnn_type = gnn_type
         self.norm1 = nn.LayerNorm(emb_dim) if norm == "layer" else nn.BatchNorm1d(emb_dim)
@@ -38,19 +38,19 @@ class GraphPooling(nn.Module):
         h0 = x
         if self.gnn_type == "CustomGatedGCN":
             h1, e1 = self.conv1(h0, edge_index, edge_attr, pos)
-            h1 = F.relu(self.norm1(h1))
+            h1 = self.norm1(F.relu(h1))
             h2, e2 = self.conv2(h1, edge_index, e1, pos)
-            h2 = F.relu(self.norm2(h2))
+            h2 = self.norm2(F.relu(h2))
         elif self.gnn_type == "gine":
             h1 = self.conv1(h0, edge_index, edge_attr) 
-            h1 = F.relu(self.norm1(h1))
+            h1 = self.norm1(F.relu(h1))
             h2 = self.conv2(h1, edge_index, edge_attr) 
-            h2 = F.relu(self.norm2(h2))
+            h2 = self.norm2(F.relu(h2))
         elif self.gnn_type == "graphconv":
             h1 = self.conv1(h0, edge_index)
-            h1 = F.relu(self.norm1(h1))
+            h1 = self.norm1(F.relu(h1))
             h2 = self.conv2(h1, edge_index)
-            h2 = F.relu(self.norm2(h2)) 
+            h2 = self.norm2(F.relu(h2)) 
         h = torch.cat([h1, h2], dim = -1)
         h = F.relu(self.lin(h))
         return h
@@ -130,7 +130,7 @@ class MGT(nn.Module):
                 self.gps.append(pyg_nn.GPSConv(emb_dim, pyg_nn.GINEConv(nn.Sequential(nn.Linear(emb_dim, emb_dim * 2), nn.BatchNorm1d(emb_dim * 2) if norm == "batch_norm" else nn.LayerNorm(emb_dim * 2)
                                                                    ,nn.ReLU(), nn.Linear(emb_dim * 2, emb_dim)), 
                                                                    edge_dim = emb_dim), heads = num_head, dropout = dropout, 
-                                                                   attn_dropout = attn_dropout, norm = norm))
+                                                                   attn_dropout = attn_dropout, norm = norm + "_norm"))
             else:
                 raise NotImplementedError
         
@@ -188,6 +188,7 @@ class CustomMGT(nn.Module):
     """
     def __init__(self, config):
         super().__init__()
+        print(config.norm)
 
         ##### atom and bond embdding
         self.emb_dim = config.emb_dim
@@ -227,7 +228,7 @@ class CustomMGT(nn.Module):
         self.cluster_learner = ClusterLearner("CustomGatedGCN", config.emb_dim, config.dropout, config.norm, config.num_cluster)
 
         ##### substructure-level transformer #####
-        norm = "layer" if config.norm == "layer_norm" else "batch"
+        norm = "layer" if config.norm == "layer" else "batch"
         self.substructure_transformer = Transformer(emb_dim = config.emb_dim, 
                                                     num_layer = 2, 
                                                     num_head = config.num_head,
