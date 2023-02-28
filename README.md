@@ -16,14 +16,14 @@ Recommend using Conda for easy installation.
 ## Run
 ### Peptides Datasets
   ```bash
-   sh train_peptides_struct.sh 
+   sh scripts/train_peptides_struct.sh 
   ```
   ```bash
-   sh train_peptides_func.sh 
+   sh scripts/train_peptides_func.sh 
   ```
 ### Polymer Datasets
   ```bash
-   sh train_polymer.sh 
+   sh scripts/train_polymer.sh 
   ```
 ## References
 ```bibtex
