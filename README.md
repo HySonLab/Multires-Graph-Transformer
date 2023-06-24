@@ -28,7 +28,7 @@ Recommend using Conda for easy installation.
    sh scripts/train_polymer.sh 
   ```
 
-### Ligand Binding Datasets
+### Protein-Ligand Binding Affinity Datasets
 Please download the dataset from [https://zenodo.org/record/4914718](https://zenodo.org/record/4914718), and unzip them to the folder data/lba. \
 Then, you can preprocess them by running
 ```bash
@@ -69,5 +69,15 @@ Finally, to train the model, run:
   pages={234111},
   year={2019},
   publisher={AIP Publishing LLC}
+}
+```
+
+```bibtex
+@inproceedings{townshend2021atomd,
+title={{ATOM}3D: Tasks on Molecules in Three Dimensions},
+author={Raphael John Lamarre Townshend and Martin V{\"o}gele and Patricia Adriana Suriana and Alexander Derry and Alexander Powers and Yianni Laloudakis and Sidhika Balachandar and Bowen Jing and Brandon M. Anderson and Stephan Eismann and Risi Kondor and Russ Altman and Ron O. Dror},
+booktitle={Thirty-fifth Conference on Neural Information Processing Systems Datasets and Benchmarks Track (Round 1)},
+year={2021},
+url={https://openreview.net/forum?id=FkDZLpK1Ml2}
 }
 ```
