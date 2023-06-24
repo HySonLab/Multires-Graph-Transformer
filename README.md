@@ -27,6 +27,15 @@ Recommend using Conda for easy installation.
   ```
 ## References
 ```bibtex
+@article{ngo2023multiresolution,
+  title={Multiresolution Graph Transformers and Wavelet Positional Encoding for Learning Hierarchical Structures},
+  author={Ngo, Nhat Khang and Hy, Truong Son and Kondor, Risi},
+  journal={arXiv preprint arXiv:2302.08647},
+  year={2023}
+}
+```
+
+```bibtex
 @inproceedings{
   dwivedi2022long,
   title={Long Range Graph Benchmark},
