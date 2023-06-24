@@ -274,3 +274,112 @@ class CustomMGT(nn.Module):
     @property
     def num_parameters(self):
         return sum(p.numel() for p in self.parameters() if p.requires_grad)
+    
+
+class LBAMGT(nn.Module):
+    def __init__(self, config):
+        super().__init__()
+
+        ##### atom and bond embdding
+        self.emb_dim = config.emb_dim
+
+        self.atom_encoder = nn.Sequential(
+                nn.Linear(61, config.emb_dim),
+                nn.Tanh(),
+                nn.Linear(config.emb_dim, config.emb_dim)
+                )
+        
+        self.bond_encoder = nn.Sequential(
+                nn.Linear(1, config.emb_dim), 
+                nn.Tanh(),
+                nn.Linear(config.emb_dim, config.emb_dim)
+                )
+            #self.bond_encoder = nn.Embedding(4, config.emb_dim)
+
+        ##### positional encoding #####
+        self.pe_name = config.pe_name
+        num_pos =config.diff_step
+        self.equiv_pe = config.equiv_pe
+        if config.equiv_pe:
+            print("Used Equiv PE\n")
+            self.pos_encoder = EquivWavePE(num_pos, 16, config.device)
+        else:
+            self.pre_norm = nn.BatchNorm1d(num_pos)
+            self.pos_encoder = nn.Linear(num_pos, 16)
+        
+
+        self.lin1 = nn.Linear(config.emb_dim + 16, config.emb_dim)
+
+
+        ##### atom-level transformer ##### 
+        Layer = GPSLayer
+        layers = []
+        for _ in range(config.num_layer):
+            layers.append(Layer(dim_h=config.emb_dim,
+                                local_gnn_type=config.local_gnn_type,
+                                global_model_type= config.global_model_type,
+                                num_heads=config.num_head,
+                                equivstable_pe=config.local_gnn_type == "CustomGatedGCN",
+                                dropout = config.dropout,
+                                attn_dropout=config.attn_dropout,
+                                layer_norm = config.layer_norm,
+                                batch_norm = config.batch_norm,
+                                bigbird_cfg=None))
+        
+        self.atom_transformer = torch.nn.Sequential(*layers)
+        
+        ##### clustering #####
+        self.cluster_learner = ClusterLearner(config.local_gnn_type, config.emb_dim, config.dropout, config.norm, config.num_cluster)
+
+        ##### substructure-level transformer #####
+        norm = "layer" if config.layer_norm == 1 else "batch"
+        self.substructure_transformer = Transformer(emb_dim = config.emb_dim, 
+                                                    num_layer = 2, 
+                                                    num_head = config.num_head,
+                                                    drop_ratio = config.dropout, 
+                                                    norm = norm)
+        self.lin = nn.Linear(config.emb_dim * 2, config.emb_dim)
+
+        ##### feed-forward nn layer #####
+        self.ffn = nn.Linear(config.emb_dim, config.num_task)
+
+    def forward(self, batch, return_feature = False):
+        ### atom and bond encoder ####
+        #print(batch.pos.shape)
+        batch.x = self.atom_encoder(batch.x)
+        batch.edge_attr = self.bond_encoder(batch.edge_attr.unsqueeze(-1))
+
+        ### positional encoding ####    
+        if self.equiv_pe:
+            ## newly added code
+            batch.pos = self.pos_encoder(batch)
+            #batch.pos = self.lin_pos(batch.pos)
+        else:
+            batch.pos = self.pos_encoder(self.pre_norm(batch.pos))
+        batch.x = torch.cat([batch.x, batch.pos], dim = 1)
+        batch.x = self.lin1(batch.x)
+
+        ### atom-level transformer ###
+        h = batch.x
+        batch = self.atom_transformer(batch)
+
+        ### clustering ###
+        h_atom = batch.x 
+        h_pos = batch.pos
+        h_units, _, loss1, loss2, s, mask = self.cluster_learner(h_atom, batch.edge_index, 
+                                                                batch.edge_attr, h_pos, batch.batch)
+
+
+
+        # ### substructure-level transformer
+        h_transform = self.substructure_transformer(h_units, is_sparse = False)
+        h_units = torch.cat([h_transform, h_units], dim = -1)
+        h_units = self.lin(h_units)
+        h_g = torch.sum(h_units, dim = 1)
+
+        if return_feature:
+            return h_g
+        return self.ffn(h_g), loss1, loss2, s
+
+    def count_params(self):
+        return sum(p.numel() for p in self.parameters() if p.requires_grad)

@@ -29,8 +29,7 @@ class PolymerDataset(pyg_data.InMemoryDataset):
         
     @property
     def processed_file_names(self):
-        if self.pre_transform is not None:
-            #return f"geometric_{self.name}_new.pt" 
+        if self.pre_transform is not None: 
             return f"wave.pt"
         return f"geometric_{self.name}_unorm.pt" 
 
@@ -59,7 +58,6 @@ class PolymerDataset(pyg_data.InMemoryDataset):
             data_list = [data for data in data_list if self.pre_transform(data)]
         
         data, slices = self.collate(data_list)
-        #print(type(data))
         torch.save((data, slices), self.processed_paths[0])
 
     def generate_poly_graph(self, smi, target):
@@ -68,7 +66,7 @@ class PolymerDataset(pyg_data.InMemoryDataset):
         edge_index = torch.from_numpy(mol_graph["edge_index"])
         edge_attr = torch.from_numpy(mol_graph["edge_feat"])
         target = torch.tensor([target]).float()
-        data = pyg_data.Data(edge_index, x = x, edge_attr = edge_attr)
+        data = pyg_data.Data(edge_index = edge_index, x = x, edge_attr = edge_attr)
         return data    
     
     @property

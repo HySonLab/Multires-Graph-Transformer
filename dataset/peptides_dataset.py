@@ -18,7 +18,7 @@ from torch_geometric.data import InMemoryDataset
 from tqdm import tqdm
 
 class PeptidesStructuralDataset(InMemoryDataset):
-    def __init__(self, root='datasets', smiles2graph=smiles2graph,
+    def __init__(self, root='data', smiles2graph=smiles2graph,
                  transform=None, pre_transform=None):
         """
         PyG dataset of 15,535 small peptides represented as their molecular
@@ -151,7 +151,7 @@ class PeptidesStructuralDataset(InMemoryDataset):
 
 
 class PeptidesFunctionalDataset(InMemoryDataset):
-    def __init__(self, root='datasets', smiles2graph=smiles2graph,
+    def __init__(self, root='data', smiles2graph=smiles2graph,
                  transform=None, pre_transform=None):
         """
         PyG dataset of 15,535 peptides represented as their molecular graph

@@ -17,7 +17,7 @@ def normalize(train_data, valid_data, test_data):
     test_data.data.target = (test_data.data.target - train_mean) / train_std 
     return train_data, valid_data, test_data, train_mean, train_std
     
-def train_with_cluster(model, device, loader, optimizer, task_type):
+def train_with_cluster(model, device, loader, optimizer, task_type, is_lba=False):
     model.train()
     y_true = []
     y_pred = []
@@ -31,6 +31,8 @@ def train_with_cluster(model, device, loader, optimizer, task_type):
             pred, link_loss, ent_loss = model(batch)
             pred = pred.squeeze()
             optimizer.zero_grad()
+            if not is_lba:
+                batch.y = batch.target
             is_labeled = batch.y == batch.y
             if "classification" in task_type: 
                 loss = cls_criterion(pred.to(torch.float32)[is_labeled], batch.y.to(torch.float32)[is_labeled])
@@ -42,7 +44,7 @@ def train_with_cluster(model, device, loader, optimizer, task_type):
             train_loss += loss.detach().item()
     return train_loss / len(loader)
     
-def eval_with_cluster(model, device, loader, evaluator, task_type = -1):
+def eval_with_cluster(model, device, loader, evaluator, task_type = -1, is_lba=False):
     model.eval()
     y_true = []
     y_pred = []
@@ -51,6 +53,8 @@ def eval_with_cluster(model, device, loader, evaluator, task_type = -1):
         if batch.x.shape[0] == 1:
             pass
         else:
+            if not is_lba:
+                batch.y = batch.target
             with torch.no_grad():
                 pred, _, _ = model(batch)
                 pred = pred.squeeze()
