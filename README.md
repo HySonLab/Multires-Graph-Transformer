@@ -27,6 +27,16 @@ Recommend using Conda for easy installation.
   ```
 ## References
 ```bibtex
+@article{ngo2023multiresolution,
+  title={Multiresolution Graph Transformers and Wavelet Positional Encoding for Learning Hierarchical Structures},
+  author={Ngo, Nhat Khang and Hy, Truong Son and Kondor, Risi},
+  journal={arXiv preprint arXiv:2302.08647},
+  year={2023}
+}
+
+```
+
+```bibtex
 @inproceedings{
   dwivedi2022long,
   title={Long Range Graph Benchmark},
@@ -48,32 +58,6 @@ Recommend using Conda for easy installation.
   publisher={AIP Publishing LLC}
 }
 ```
-
-
-device=cuda:2
-pe_name=random_walk
-batch_size=128
-num_layer=2
-num_epoch=200
-num_head=4
-norm=batch
-emb_dim=84
-num_task=11
-dropout=0.25
-residual=1
-num_cluster=5
-attn_dropout=0.5
-local_gnn_type=CustomGatedGCN
-global_model_type=Transformer
-pos_dim=5
-trg=0
-version=custom
-gnn_type=gine # only used for MGT (not CustomMGT)
-
-for seed in 1 2 3 4
-do 
-    python3 train_polymer.py --device=$device --pe_name=$pe_name --batch_size=$batch_size \
-                                   --num_layer=$num_layer --num_epoch=$num_epoch --num_head=$num_head \
                                    --norm=$norm --emb_dim=$emb_dim --num_task=$num_task --dropout=$dropout \
                                    --residual=$residual --num_cluster=$num_cluster --attn_dropout=$attn_dropout \
                                    --local_gnn_type=$local_gnn_type --global_model_type=$global_model_type \
