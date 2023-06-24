@@ -10,7 +10,9 @@ Contributors:
 - [Pytorch](https://pytorch.org/)
 - [Pytorch Geometric](https://pytorch-geometric.readthedocs.io/en/latest/)
 - [OGB](https://github.com/snap-stanford/ogb.git)
-- [TorchMetrics](https://github.com/Lightning-AI/metrics.git) \
+- [TorchMetrics](https://github.com/Lightning-AI/metrics.git) 
+- [Metis](https://anaconda.org/conda-forge/pymetis)
+- [PyGSP](https://pygsp.readthedocs.io/en/stable/) \
 Recommend using Conda for easy installation. 
 
 ## Run
@@ -25,6 +27,17 @@ Recommend using Conda for easy installation.
   ```bash
    sh scripts/train_polymer.sh 
   ```
+
+### Ligand Binding Datasets
+Please download the dataset from [https://zenodo.org/record/4914718](https://zenodo.org/record/4914718), and unzip them to the folder data/lba. \
+Then, you can preprocess them by running
+```bash
+  python3 preprocess.py
+```
+Finally, to train the model, run:
+```bash
+  sh scripts/train_lba.sh
+```
 ## References
 ```bibtex
 @article{ngo2023multiresolution,
@@ -58,8 +71,3 @@ Recommend using Conda for easy installation.
   publisher={AIP Publishing LLC}
 }
 ```
-                                   --norm=$norm --emb_dim=$emb_dim --num_task=$num_task --dropout=$dropout \
-                                   --residual=$residual --num_cluster=$num_cluster --attn_dropout=$attn_dropout \
-                                   --local_gnn_type=$local_gnn_type --global_model_type=$global_model_type \
-                                   --pos_dim=$pos_dim --version=$version --gnn_type=$gnn_type --trg=$trg
-done
