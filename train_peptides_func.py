@@ -40,7 +40,7 @@ if args.pe_name == "wave":
     ### Wavelet should be preprocessed to reduce loading time in dataloader during the optimization phase ###
     pre_transform = WaveletPE(args.pos_dim, is_undirected = True)
     dataset = PeptidesFunctionalDataset(pre_transform=pre_transform)
-if args.pe_name == "learnable_equiv_wave":
+elif args.pe_name == "learnable_equiv_wave":
     pre_transform = Learnable_Equiv_WaveletPE(args.pos_dim, is_undirected=True)
     dataset = PeptidesFunctionalDataset(pre_transform = pre_transform)
 elif args.pe_name == "laplacian":
