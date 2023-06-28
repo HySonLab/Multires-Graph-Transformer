@@ -1,4 +1,4 @@
-device=cuda:1
+device=cuda:0
 pe_name=wave
 batch_size=128
 num_layer=2

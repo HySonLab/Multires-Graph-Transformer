@@ -31,7 +31,7 @@ def train_with_cluster(model, device, loader, optimizer, task_type, is_lba=False
             pred, link_loss, ent_loss = model(batch)
             pred = pred.squeeze()
             optimizer.zero_grad()
-            if not is_lba:
+            if hasattr(batch, "target") and not hasattr(batch, "y"):
                 batch.y = batch.target
             is_labeled = batch.y == batch.y
             if "classification" in task_type: 
@@ -53,7 +53,7 @@ def eval_with_cluster(model, device, loader, evaluator, task_type = -1, is_lba=F
         if batch.x.shape[0] == 1:
             pass
         else:
-            if not is_lba:
+            if hasattr(batch, "target") and not hasattr(batch, "y"):
                 batch.y = batch.target
             with torch.no_grad():
                 pred, _, _ = model(batch)

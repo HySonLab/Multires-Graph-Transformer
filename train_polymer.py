@@ -21,9 +21,9 @@ class MyTransform(object):
 
     def __call__(self, data):
         # Specify target.
-        data.target = data.target[:, self.trg]
+        data.y = data.y[:, self.trg]
         # normalize data
-        data.target = (data.target - self.mean) / self.std 
+        data.y = (data.y - self.mean) / self.std 
         if data.pos is not None:
             data.pos = data.pos[:, : self.pos_dim]
         return data
@@ -67,8 +67,8 @@ data = PolymerDataset(name, root, "train", transform= None)
 
 print("Target: ", targets[args.trg])
 
-mean = data.data.target[:, args.trg].mean(dim = 0, keepdim = True)
-std = data.data.target[:, args.trg].std(dim = 0, keepdim = True)
+mean = data.data.y[:, args.trg].mean(dim=0, keepdim=True)
+std = data.data.y[:, args.trg].std(dim=0, keepdim=True)
 
 if args.pe_name == "laplacian":
     lap_transforms = AddLaplacianEigenvectorPE(args.pos_dim, "pos", True)
@@ -110,12 +110,10 @@ device = args.device
 num_layer = args.num_layer
 num_head = args.num_head
 num_task = args.num_task
-pre_cluster = bool(args.pre_cluster)
-use_multi = bool(args.use_multi)
 args.equiv_pe = True
 
 if args.version == "custom":
-    model = CustomMGT(args, args.pe_name).to(args.device)
+    model = CustomMGT(args).to(args.device)
 else:
     model = MGT(args.num_layer, args.emb_dim, args.pos_dim, args.num_task, args.num_head, args.dropout, 
                 args.attn_dropout, args.norm, args.num_cluster, args.gnn_type, args.pe_name, args.device).to(args.device)
