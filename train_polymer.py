@@ -110,8 +110,6 @@ device = args.device
 num_layer = args.num_layer
 num_head = args.num_head
 num_task = args.num_task
-pre_cluster = bool(args.pre_cluster)
-use_multi = bool(args.use_multi)
 args.equiv_pe = True
 
 if args.version == "custom":
