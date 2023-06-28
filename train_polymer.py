@@ -21,9 +21,9 @@ class MyTransform(object):
 
     def __call__(self, data):
         # Specify target.
-        data.target = data.target[:, self.trg]
+        data.y = data.y[:, self.trg]
         # normalize data
-        data.target = (data.target - self.mean) / self.std 
+        data.y = (data.y - self.mean) / self.std 
         if data.pos is not None:
             data.pos = data.pos[:, : self.pos_dim]
         return data
