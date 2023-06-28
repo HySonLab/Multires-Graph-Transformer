@@ -66,7 +66,8 @@ class PolymerDataset(pyg_data.InMemoryDataset):
         edge_index = torch.from_numpy(mol_graph["edge_index"])
         edge_attr = torch.from_numpy(mol_graph["edge_feat"])
         target = torch.tensor([target]).float()
-        data = pyg_data.Data(edge_index = edge_index, x = x, edge_attr = edge_attr)
+        data = pyg_data.Data(
+            edge_index=edge_index, x=x, edge_attr=edge_attr, y=target)
         return data    
     
     @property

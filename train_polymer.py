@@ -67,8 +67,8 @@ data = PolymerDataset(name, root, "train", transform= None)
 
 print("Target: ", targets[args.trg])
 
-mean = data.data.target[:, args.trg].mean(dim = 0, keepdim = True)
-std = data.data.target[:, args.trg].std(dim = 0, keepdim = True)
+mean = data.data.y[:, args.trg].mean(dim=0, keepdim=True)
+std = data.data.y[:, args.trg].std(dim=0, keepdim=True)
 
 if args.pe_name == "laplacian":
     lap_transforms = AddLaplacianEigenvectorPE(args.pos_dim, "pos", True)
