@@ -117,7 +117,8 @@ class MGT(nn.Module):
         else:
             self.pre_norm = nn.LayerNorm(pos_dim) if norm == "layer_norm" else nn.BatchNorm1d(pos_dim)
             self.pos_encoder = nn.Linear(pos_dim, 16)
-            self.lin_pos = nn.Linear(emb_dim + 16, emb_dim)
+
+        self.lin_pos = nn.Linear(emb_dim + 16, emb_dim)
         self.pe_name = pe_name
 
         self.gps = nn.ModuleList([])
@@ -202,7 +203,8 @@ class CustomMGT(nn.Module):
         else:
             self.pre_norm = nn.LayerNorm(config.pos_dim) if config.norm == "layer" else nn.BatchNorm1d(config.pos_dim)
             self.pos_encoder = nn.Linear(config.pos_dim, 16)
-            self.lin_pos = nn.Linear(config.emb_dim + 16, config.emb_dim)
+
+        self.lin_pos = nn.Linear(config.emb_dim + 16, config.emb_dim)
         self.pe_name = config.pe_name
 
         ##### atom-level transformer ##### 
