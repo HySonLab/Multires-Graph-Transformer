@@ -147,6 +147,6 @@ for epoch in range(1, args.num_epoch + 1):
 print("*" * 20)
 print(args)
 print()
-print("Number of parameters: ", model.count_params())
+print("Number of parameters: ", model.num_parameters())
 print("Best validation mae: ", best_val_mae)
 print("Test mae: ", test_mae_at_best_val_mae)

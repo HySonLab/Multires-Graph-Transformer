@@ -274,7 +274,7 @@ class CustomMGT(nn.Module):
     @property
     def num_parameters(self):
         return sum(p.numel() for p in self.parameters() if p.requires_grad)
-    
+
 
 class LBAMGT(nn.Module):
     def __init__(self, config):
@@ -381,5 +381,6 @@ class LBAMGT(nn.Module):
             return h_g
         return self.ffn(h_g), loss1, loss2, s
 
-    def count_params(self):
+    @property
+    def num_parameters(self):
         return sum(p.numel() for p in self.parameters() if p.requires_grad)

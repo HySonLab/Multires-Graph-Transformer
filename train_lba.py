@@ -77,7 +77,7 @@ model = LBAMGT(args).to(device)
 
 ###
 
-print("Number of parameters: ", model.count_params())
+print("Number of parameters: ", model.num_parameters())
 
 optimizer = torch.optim.AdamW(model.parameters(), lr = 0.001, weight_decay=0)
 scheduler = torch.optim.lr_scheduler.ReduceLROnPlateau(optimizer, 'min', min_lr = 1e-5, factor=0.5)
@@ -112,7 +112,7 @@ for epoch in range(1, num_epoch + 1):
 
 print()
 print("Seed: ", args.seed)
-print("Number of parameters: ", model.count_params())
+print("Number of parameters: ", model.num_parameters())
 print("Local GNN: ", args.local_gnn_type)
 print("Global model: ", args.global_model_type)
 print("Num layer: ", args.num_layer)
