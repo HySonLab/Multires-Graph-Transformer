@@ -130,7 +130,8 @@ class PeptidesStructuralDataset(InMemoryDataset):
             data_list.append(data)
 
         if self.pre_transform is not None:
-            data_list = [self.pre_transform(data) for data in data_list]
+            print('Applying pre_transform of graphs...')
+            data_list = [self.pre_transform(data) for data in tqdm(data_list)]
 
         data, slices = self.collate(data_list)
 
@@ -248,7 +249,8 @@ class PeptidesFunctionalDataset(InMemoryDataset):
             data_list.append(data)
 
         if self.pre_transform is not None:
-            data_list = [self.pre_transform(data) for data in data_list]
+            print('Applying pre_transform of graphs...')
+            data_list = [self.pre_transform(data) for data in tqdm(data_list)]
 
         data, slices = self.collate(data_list)
 
