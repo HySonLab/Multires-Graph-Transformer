@@ -125,13 +125,27 @@ class MGT(nn.Module):
 
         for i in range(num_layer):
             if gnn_type == "graphconv":
-                self.gps.append(pyg_nn.GPSConv(emb_dim, pyg_nn.GraphConv(emb_dim, emb_dim), 
-                                heads = num_head, dropout = dropout, attn_dropout=attn_dropout, norm = norm))
+                self.gps.append(pyg_nn.GPSConv(
+                    emb_dim,
+                    pyg_nn.GraphConv(emb_dim, emb_dim),
+                    heads=num_head,
+                    dropout=dropout,
+                    attn_dropout=attn_dropout,
+                    norm=norm))
             elif gnn_type == "gine":
-                self.gps.append(pyg_nn.GPSConv(emb_dim, pyg_nn.GINEConv(nn.Sequential(nn.Linear(emb_dim, emb_dim * 2), nn.BatchNorm1d(emb_dim * 2) if norm == "batch_norm" else nn.LayerNorm(emb_dim * 2)
-                                                                   ,nn.ReLU(), nn.Linear(emb_dim * 2, emb_dim)), 
-                                                                   edge_dim = emb_dim), heads = num_head, dropout = dropout, 
-                                                                   attn_dropout = attn_dropout, norm = norm + "_norm"))
+                self.gps.append(pyg_nn.GPSConv(
+                    emb_dim,
+                    pyg_nn.GINEConv(
+                        nn.Sequential(
+                            nn.Linear(emb_dim, emb_dim * 2),
+                            nn.BatchNorm1d(emb_dim * 2) if norm == "batch_norm" else nn.LayerNorm(emb_dim * 2),
+                            nn.ReLU(),
+                            nn.Linear(emb_dim * 2, emb_dim)),
+                        edge_dim = emb_dim),
+                    heads=num_head,
+                    dropout=dropout,
+                    attn_dropout=attn_dropout,
+                    norm=norm + "_norm"))
             else:
                 raise NotImplementedError
         
@@ -214,11 +228,11 @@ class CustomMGT(nn.Module):
         layers = []
         for _ in range(config.num_layer):
             layers.append(Layer(dim_h=config.emb_dim,
-                                local_gnn_type= config.local_gnn_type,
-                                global_model_type= config.global_model_type,
+                                local_gnn_type=config.local_gnn_type,
+                                global_model_type=config.global_model_type,
                                 num_heads=config.num_head,
-                                equivstable_pe= True,
-                                dropout = config.dropout,
+                                equivstable_pe=True,
+                                dropout=config.dropout,
                                 attn_dropout=config.attn_dropout,
                                 layer_norm = config.norm == "layer",
                                 batch_norm = config.norm == "batch",
