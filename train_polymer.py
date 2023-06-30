@@ -1,12 +1,12 @@
+import torch
 import torch_geometric
 from torch_geometric.loader import DataLoader
 import torch_geometric.transforms as T
-from torch_geometric.loader import DataLoader
 from torch_geometric.transforms import AddRandomWalkPE, AddLaplacianEigenvectorPE
 import argparse
-from utils import *
-from metrics import *
-from network.model import *
+from utils import train_with_cluster, eval_with_cluster
+from metrics import MetricWrapper
+from network.model import MGT, CustomMGT
 from dataset.polymer_dataset import PolymerDataset
 from network.wave_pe import WaveletPE, Learnable_Equiv_WaveletPE
 
@@ -95,7 +95,7 @@ elif args.pe_name == "learnable_equiv_wave":
     valid_data = PolymerDataset(name, root, "valid", transform= transforms, pre_transform= pre_transforms)
     test_data = PolymerDataset(name, root, "test", transform=transforms, pre_transform=pre_transforms)
 else:
-    raise NotImplemented
+    raise NotImplementedError
 
 print("Num train: ", len(train_data))
 print("Num valid: ", len(valid_data))
