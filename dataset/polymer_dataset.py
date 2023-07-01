@@ -55,7 +55,7 @@ class PolymerDataset(pyg_data.InMemoryDataset):
             data_list = [data for data in data_list if self.pre_filter(data)]
 
         if self.pre_transform is not None:
-            data_list = [data for data in data_list if self.pre_transform(data)]
+            data_list = [self.pre_transform(data) for data in tqdm(data_list)]
         
         data, slices = self.collate(data_list)
         torch.save((data, slices), self.processed_paths[0])

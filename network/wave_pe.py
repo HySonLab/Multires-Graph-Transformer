@@ -39,16 +39,14 @@ class WaveletPE(object):
         w0 = utils.to_scipy_sparse_matrix(edge_index, edge_weight, graph.num_nodes)
         
         ### scaling parameter s = 1
-        vector = torch.zeros((graph.num_nodes, self.pos_enc_dim))
-        
+        p = []
         for i in range(self.pos_enc_dim):
             ### multiply the graph laplapcian with the scaling parameter at the current scale.
             w = w0.multiply(-1 * self.scaling_coefs[i])
-            w = expm(w)
-            
+            w = expm(w.todense())
             ## Special case of equivariant encoding where we take the diagonal entries of the wavelet tensor
-            vector[:, i] = torch.from_numpy(w.diagonal())
-        return vector.float()
+            p.append(torch.from_numpy(w.diagonal().copy()))
+        return torch.stack(p, dim=1)
 
 def dense_to_sparse(adj):
     edge_index = torch.ones((adj.size(-1), adj.size(-2))).nonzero().t()
@@ -84,8 +82,8 @@ class Learnable_Equiv_WaveletPE(object):
 
         for i in range(self.pos_enc_dim):
             w = w0.multiply(-1 * self.scaling_coefs[i])
-            w = expm(w)
-            p.append(torch.from_numpy(w.toarray()))
+            w = expm(w.todense())
+            p.append(torch.from_numpy(w.copy()))
         p = torch.stack(p, dim = 0)
         return dense_to_sparse(p)
 

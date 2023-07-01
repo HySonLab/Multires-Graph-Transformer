@@ -1,12 +1,12 @@
+import torch
 import torch_geometric
 from torch_geometric.loader import DataLoader
 import torch_geometric.transforms as T
-from torch_geometric.loader import DataLoader
 from torch_geometric.transforms import AddRandomWalkPE, AddLaplacianEigenvectorPE
 import argparse
-from utils import *
-from metrics import *
-from network.model import *
+from utils import train_with_cluster, eval_with_cluster
+from metrics import MetricWrapper
+from network.model import MGT, CustomMGT
 from dataset.polymer_dataset import PolymerDataset
 from network.wave_pe import WaveletPE, Learnable_Equiv_WaveletPE
 
@@ -35,25 +35,29 @@ targets = ["gap", "humo", "lumo"]
 parser = argparse.ArgumentParser(description="MGT on Polymer Property Prediction")
 parser.add_argument("--out_dir", type = str, default = "./results")
 parser.add_argument("--seed", type = int, default=123456)
-parser.add_argument("--pe_name", type = str, default = "lap")
-parser.add_argument("--device", type=str, default="cuda:0", help = "cuda device")
-parser.add_argument("--batch_size", type = int, default = 128)
-parser.add_argument("--num_layer", type = int, default = 2)
+parser.add_argument(
+        "--pe_name", type=str,
+        choices=["laplacian", "random_walk", "wave", "learnable_equiv_wave"],
+        default="learnable_equiv_wave")
+parser.add_argument("--device", type=str, default="cuda:0", help="cuda device")
+parser.add_argument("--batch_size", type=int, default = 128)
+parser.add_argument("--num_layer", type=int, default=2)
 parser.add_argument("--num_epoch", type = int, default = 200)
 parser.add_argument("--num_head", type = int, default = 4)
-parser.add_argument("--norm", type = str, default = "batch")
+parser.add_argument("--norm", type=str, choices=['layer', 'batch'], default = "batch")
 parser.add_argument('--emb_dim', type = int, default = 100)
 parser.add_argument("--num_task", type = int, default = 11)
 parser.add_argument("--dropout", type = float, default=0.25)
 parser.add_argument("--residual", type = int, default = 1)
-parser.add_argument("--layer_norm", type = int, default=0)
-parser.add_argument("--batch_norm", type = int, default = 1)
 parser.add_argument("--num_cluster", type = int, default = 10)
 parser.add_argument("--attn_dropout", type = float, default = 0.25)
 parser.add_argument("--local_gnn_type", type = str, default = "CustomGatedGCN")
-parser.add_argument("--global_model_type", type = str, default = "Transformer")
+parser.add_argument(
+        "--global_model_type", type=str,
+        choices=['Transformer', 'BiasedTransformer'], default="Transformer")
 parser.add_argument("--trg", type = int, default = 0)
-parser.add_argument("--pos_dim", type = int, default= 8)
+parser.add_argument("--pos_dim", type=int, default=8,
+                    help="Number of scales s in positional encoding")
 parser.add_argument("--version", type = str, default = "custom")
 parser.add_argument("--gnn_type", type = str, default = "gine")
 
@@ -95,7 +99,7 @@ elif args.pe_name == "learnable_equiv_wave":
     valid_data = PolymerDataset(name, root, "valid", transform= transforms, pre_transform= pre_transforms)
     test_data = PolymerDataset(name, root, "test", transform=transforms, pre_transform=pre_transforms)
 else:
-    raise NotImplemented
+    raise NotImplementedError
 
 print("Num train: ", len(train_data))
 print("Num valid: ", len(valid_data))
@@ -147,6 +151,6 @@ for epoch in range(1, args.num_epoch + 1):
 print("*" * 20)
 print(args)
 print()
-print("Number of parameters: ", model.count_params())
+print("Number of parameters: ", model.num_parameters())
 print("Best validation mae: ", best_val_mae)
 print("Test mae: ", test_mae_at_best_val_mae)
