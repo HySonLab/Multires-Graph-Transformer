@@ -1,4 +1,4 @@
-# Multiresolution Graph Transformers and Wavelet Positional Encoding for Learning Hierarchical Structures
+# Multiresolution Graph Transformers and Wavelet Positional Encoding for Learning Long-Range and Hierarchical Structures
 
 Paper: https://arxiv.org/pdf/2302.08647.pdf
 
