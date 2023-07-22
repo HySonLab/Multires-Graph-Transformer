@@ -1,6 +1,8 @@
 # Multiresolution Graph Transformers and Wavelet Positional Encoding for Learning Long-Range and Hierarchical Structures
 
-Paper: https://arxiv.org/pdf/2302.08647.pdf
+Paper: 
+* https://pubs.aip.org/aip/jcp/article/159/3/034109/2903066/Multiresolution-graph-transformers-and-wavelet (Journal of Chemical Physics, Volume 159, Issue 3)
+* https://arxiv.org/pdf/2302.08647.pdf (ICML 2023, Workshop of Computational Biology)
 
 Contributors:
 * Ngo Nhat Khang
@@ -38,7 +40,26 @@ Finally, to train the model, run:
 ```bash
   sh scripts/train_lba.sh
 ```
-## References
+
+## Please cite our paper using the following bibtex
+```bibtex
+@article{10.1063/5.0152833,
+    author = {Ngo, Nhat Khang and Hy, Truong Son and Kondor, Risi},
+    title = "{Multiresolution graph transformers and wavelet positional encoding for learning long-range and hierarchical structures}",
+    journal = {The Journal of Chemical Physics},
+    volume = {159},
+    number = {3},
+    pages = {034109},
+    year = {2023},
+    month = {07},
+    abstract = "{Contemporary graph learning algorithms are not well-suited for large molecules since they do not consider the hierarchical interactions among the atoms, which are essential to determining the molecular properties of macromolecules. In this work, we propose Multiresolution Graph Transformers (MGT), the first graph transformer architecture that can learn to represent large molecules at multiple scales. MGT can learn to produce representations for the atoms and group them into meaningful functional groups or repeating units. We also introduce Wavelet Positional Encoding (WavePE), a new positional encoding method that can guarantee localization in both spectral and spatial domains. Our proposed model achieves competitive results on three macromolecule datasets consisting of polymers, peptides, and protein-ligand complexes, along with one drug-like molecule dataset. Significantly, our model outperforms other state-of-the-art methods and achieves chemical accuracy in estimating molecular properties (e.g., highest occupied molecular orbital, lowest unoccupied molecular orbital, and their gap) calculated by Density Functional Theory in the polymers dataset. Furthermore, the visualizations, including clustering results on macromolecules and low-dimensional spaces of their representations, demonstrate the capability of our methodology in learning to represent long-range and hierarchical structures. Our PyTorch implementation is publicly available at https://github.com/HySonLab/Multires-Graph-Transformer.}",
+    issn = {0021-9606},
+    doi = {10.1063/5.0152833},
+    url = {https://doi.org/10.1063/5.0152833},
+    eprint = {https://pubs.aip.org/aip/jcp/article-pdf/doi/10.1063/5.0152833/18050074/034109\_1\_5.0152833.pdf},
+}
+```
+
 ```bibtex
 @article{ngo2023multiresolution,
   title={Multiresolution Graph Transformers and Wavelet Positional Encoding for Learning Hierarchical Structures},
@@ -46,9 +67,9 @@ Finally, to train the model, run:
   journal={arXiv preprint arXiv:2302.08647},
   year={2023}
 }
-
 ```
 
+## References
 ```bibtex
 @inproceedings{
   dwivedi2022long,
