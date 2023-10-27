@@ -1,5 +1,7 @@
 # Multiresolution Graph Transformers and Wavelet Positional Encoding for Learning Long-Range and Hierarchical Structures
 
+![Multires-GT](Multires-GT.png)
+
 Paper: 
 * https://pubs.aip.org/aip/jcp/article/159/3/034109/2903066/Multiresolution-graph-transformers-and-wavelet (Journal of Chemical Physics, Volume 159, Issue 3)
 * https://arxiv.org/pdf/2302.08647.pdf (ICML 2023, Workshop of Computational Biology)
